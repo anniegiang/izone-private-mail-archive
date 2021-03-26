@@ -1,1 +1,3 @@
-archive private mails asap before disbandment
+simple script that fetches and saves your mail from IZ\*ONE's Private Mail app.
+
+this is still in progress, deadline: before they close the app/disbandment...

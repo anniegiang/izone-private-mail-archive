@@ -1,7 +1,7 @@
 {
-  "name": "iz1-archive",
+  "name": "izone-private-mail-archive",
   "version": "1.0.0",
-  "description": "",
+  "description": "IZONE Private Mail Archive",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
