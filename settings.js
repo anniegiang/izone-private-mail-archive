@@ -1,12 +1,16 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-const userSettings = {
+const user = {
   userId: process.env.PM_USER_ID,
   accessToken: process.env.PM_ACCESS_TOKEN,
 };
 
-const appSettings = {
+const app = {
+  port: process.env.PORT,
+};
+
+const pm = {
   "terms-version": process.env.TERMS_VERSION,
   "os-type": process.env.OS_TYPE,
   api_host: process.env.PM_API_HOST,
@@ -14,6 +18,7 @@ const appSettings = {
 };
 
 module.exports = {
-  userSettings,
-  appSettings,
+  user,
+  pm,
+  app,
 };
