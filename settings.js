@@ -8,6 +8,7 @@ const app = {
 
 const endpoints = {
   inbox: process.env.PM_INBOX_PATH,
+  mail: process.env.PM_MAIL_PATH,
   members: process.env.PM_MEMBERS_PATH,
   users: process.env.PM_USERS_PATH,
 };
