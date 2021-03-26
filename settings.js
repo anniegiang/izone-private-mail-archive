@@ -1,24 +1,27 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-const user = {
-  userId: process.env.PM_USER_ID,
-  accessToken: process.env.PM_ACCESS_TOKEN,
+const app = {
+  apiHost: `${process.env.PM_API_HOST}${process.env.PM_API_VERSION}`,
+  appHost: process.env.PM_APP_HOST,
 };
 
-const app = {
-  port: process.env.PORT,
+const endpoints = {
+  inbox: process.env.PM_INBOX_PATH,
+  members: process.env.PM_MEMBERS_PATH,
+  users: process.env.PM_USERS_PATH,
 };
 
 const pm = {
   "terms-version": process.env.TERMS_VERSION,
+  "application-version": process.env.APPLICATION_VERSION,
   "os-type": process.env.OS_TYPE,
-  api_host: process.env.PM_API_HOST,
-  app_host: process.env.PM_APP_HOST,
+  "user-id": process.env.PM_USER_ID,
+  "access-token": process.env.PM_ACCESS_TOKEN,
 };
 
 module.exports = {
-  user,
   pm,
   app,
+  endpoints,
 };

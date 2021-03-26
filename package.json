@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/anniegiang/iz1-pm-archive#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0"
   }
 }
