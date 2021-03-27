@@ -1,3 +1,5 @@
 .env
 /node_modules
 _data.js
+/out
+_index.html
