@@ -1,4 +1,4 @@
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 
 const app = {
@@ -14,11 +14,11 @@ const endpoints = {
 };
 
 const pm = {
-  "terms-version": process.env.TERMS_VERSION,
-  "application-version": process.env.APPLICATION_VERSION,
-  "os-type": process.env.OS_TYPE,
-  "user-id": process.env.PM_USER_ID,
-  "access-token": process.env.PM_ACCESS_TOKEN,
+  'terms-version': process.env.TERMS_VERSION,
+  'application-version': process.env.APPLICATION_VERSION,
+  'os-type': process.env.OS_TYPE,
+  'user-id': process.env.PM_USER_ID,
+  'access-token': process.env.PM_ACCESS_TOKEN,
 };
 
 module.exports = {
