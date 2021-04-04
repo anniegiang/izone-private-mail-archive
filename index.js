@@ -104,11 +104,10 @@ class App {
         mail.mailDetailsHTMLString = mailDetails.data;
 
         console.log(`📩 Saving ${member.realname_ko} - ${htmlFileName}`);
-        await this.MailSaver.saveMail(mail, mailPath, imagesPath);
 
-        this.MailSaver.directoryExistsAsync(mailPath, (error) => {
+        await this.MailSaver.saveMail(mail, mailPath, imagesPath, (error) => {
           if (error) {
-            console.log('❌ Fail!\n');
+            console.log('❌ Fail!\n', error);
             failedMails++;
           } else {
             console.log('✅ Saved!\n');
