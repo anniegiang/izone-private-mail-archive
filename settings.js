@@ -6,7 +6,7 @@ const app = {
   apiHost: `https://app-api.izone-mail.com/v1`,
   appHost: 'https://app-web.izone-mail.com',
   imagesFolder: 'images',
-  mailFolder: userSettings.mailFolderName || 'out',
+  mailFolder: userSettings.mailFolderName || process.env.MAIL_FOLDER,
 };
 
 const endpoints = {

@@ -11,8 +11,23 @@ class App {
   }
 
   async init() {
+    const today = new Date();
+    const lastDay = new Date('2021-05-31');
+    const sameMonth = today.getUTCMonth() === lastDay.getUTCMonth();
+    const sameDay = today.getUTCDate() === lastDay.getUTCDate();
+    const sameYear = today.getUTCFullYear() === lastDay.getUTCFullYear();
+
+    if (sameMonth && sameDay && sameYear) {
+      console.log(
+        '❗️  Private Mail has termininated their service.\nThis script will no longer be able to fetch new mails.'
+      );
+      return;
+    }
+
     if (!this.checkConfig) {
-      console.log('❗️ Your settings are incomplete.');
+      console.log(
+        '❗️ Your settings are incomplete. Fill in your info in userSettings.js.'
+      );
       return;
     }
 
@@ -131,7 +146,11 @@ class App {
   }
 
   get checkConfig() {
-    return this.settings.app || this.settings.endpoints || this.settings.pm;
+    return (
+      this.settings.pm['user-id'] &&
+      this.settings.pm['access-token'] &&
+      this.settings.app.mailFolder
+    );
   }
 }
 
