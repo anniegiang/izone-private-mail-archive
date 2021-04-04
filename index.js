@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const settings = require('./settings');
 const PMApi = require('./lib/pmApi');
@@ -34,11 +33,9 @@ class App {
       `${latestMail.id}.html`
     );
 
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory);
-    }
+    this.MailSaver.makeDirectory(directory);
 
-    if (fs.existsSync(latestMailPath)) {
+    if (this.MailSaver.directoryExists(latestMailPath)) {
       console.log(`No new mail, lastest mail is ${latestMail.id}.`);
       return;
     }
@@ -69,15 +66,14 @@ class App {
       }
 
       for (const mail of inbox.data.mails) {
-        const mailPath = path.join(
-          directory,
-          `${mail.member.realname_ko}`,
-          `${mail.id}.html`
-        );
+        const memberDir = path.join(directory, mail.member.realname_ko);
+        const mailPath = path.join(memberDir, `${mail.id}.html`);
 
-        if (fs.existsSync(mailPath)) {
+        if (this.MailSaver.directoryExists(mailPath)) {
           continue;
         }
+
+        this.MailSaver.makeDirectory(memberDir);
 
         const { member } = mail;
         const memberId = member.id;
@@ -98,22 +94,24 @@ class App {
           subject: mail.subject_ko,
           content: mail.content_ko,
           receivedDateTime: mail.receive_datetime,
-          mailDetailsHTML: mailDetails.data,
+          mailDetailsHTMLString: mailDetails.data,
         };
 
-        console.log(`Saving mail: ${mail.id}...`);
-
-        this.MailSaver.saveMail(newMail, directory);
+        this.MailSaver.saveMail(newMail, mailPath);
+        console.log(`Saved mail: ${mail.id}`);
         totalMails++;
-
-        if (!inbox.data.has_next_page) {
-          done = true;
-          break;
-        }
       }
+
+      if (!inbox.data.has_next_page) {
+        done = true;
+        break;
+      }
+
       page++;
     }
-    console.log(`Finished saving ${totalMails} new mails!`);
+    console.log(
+      `Finished saving ${totalMails} new ${totalMails > 2 ? 'mails' : 'mail'}!`
+    );
   }
 
   get checkConfig() {
