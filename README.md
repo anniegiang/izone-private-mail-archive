@@ -10,7 +10,7 @@ This script fetches every single mail you have ever received from the members yo
 #### Pre-reqs
 - npm
 - Node.js
-- Private Mail userId (in the app's settings)
+- Private Mail user ID (in the app's settings)
 - Private Mail acess token
   - Located in the HTTP request header. The header can be captured using a proxy.
 
@@ -22,6 +22,7 @@ This script fetches every single mail you have ever received from the members yo
 
 #### Folder structure
 `out/memberKoreanName/` => all HTML mails (viewable in the browser)
+<br />
 `out/memberKoreanName/images` => all images live here
 
 ***Don't modify the file names, as the script uses them to save mails efficiently, and to know if your inbox is updated or not.***
