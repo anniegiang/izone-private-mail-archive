@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anniegiang/iz1-pm-archive.git"
+    "url": "git+https://github.com/anniegiang/izone-private-mail-archive.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/anniegiang/iz1-pm-archive/issues"
+    "url": "https://github.com/anniegiang/izone-private-mail-archive/issues"
   },
-  "homepage": "https://github.com/anniegiang/iz1-pm-archive#readme",
+  "homepage": "https://github.com/anniegiang/izone-private-mail-archive#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
