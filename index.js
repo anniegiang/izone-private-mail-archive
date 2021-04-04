@@ -10,14 +10,6 @@ class App {
     this.MailSaver = new MailSaver();
   }
 
-  htmlFileName(mail) {
-    const mailDate = new Date(mail.receive_datetime);
-    const formattedDate = `${mailDate.getFullYear()}-${
-      mailDate.getMonth() + 1
-    }-${mailDate.getDate()}`;
-    return `${mail.id}__${mail.subject_ko}__${formattedDate}__.html`;
-  }
-
   async init() {
     if (!this.checkConfig) {
       console.log('❗️ Your settings are incomplete.');
@@ -34,14 +26,14 @@ class App {
       return;
     }
 
-    const directory = path.join(__dirname, this.settings.app.destinationFolder);
+    const directory = path.join(__dirname, this.settings.app.mailFolder);
 
     const { mails } = initialInbox.data;
     const latestMail = mails[0];
     const latestMailPath = path.join(
       directory,
       `${latestMail.member.realname_ko}`,
-      this.htmlFileName(latestMail)
+      this.MailSaver.fileName(latestMail)
     );
 
     this.MailSaver.makeDirectory(directory);
@@ -78,7 +70,7 @@ class App {
       }
 
       for (const mail of inbox.data.mails) {
-        const htmlFileName = this.htmlFileName(mail);
+        const htmlFileName = this.MailSaver.fileName(mail);
         const memberDir = path.join(directory, mail.member.realname_ko);
         const mailPath = path.join(memberDir, htmlFileName);
 
@@ -86,38 +78,25 @@ class App {
           continue;
         }
 
+        const imagesPath = path.join(memberDir, this.settings.app.imagesFolder);
         this.MailSaver.makeDirectory(memberDir);
+        this.MailSaver.makeDirectory(imagesPath);
 
         const { member } = mail;
-        const memberId = member.id;
-
-        if (!this.MailSaver.getMember(memberId)) {
-          await this.MailSaver.addMember({
-            id: memberId,
-            name: member.realname_ko,
-            imageUrl: member.image_url,
-          });
-        }
+        await this.MailSaver.addMember(member);
 
         const mailDetails = await this.PMApi.getMailDetail(mail.id);
-
-        const newMail = {
-          memberId,
-          mailId: mail.id,
-          subject: mail.subject_ko,
-          content: mail.content_ko,
-          receivedDateTime: mail.receive_datetime,
-          mailDetailsHTMLString: mailDetails.data,
-        };
+        mail.mailDetailsHTMLString = mailDetails.data;
 
         console.log(`📩 Saving ${member.realname_ko} - ${htmlFileName}`);
-        const savedStatus = await this.MailSaver.saveMail(newMail, mailPath);
+        await this.MailSaver.saveMail(mail, mailPath, imagesPath);
 
-        if (savedStatus === undefined) {
+        if (this.MailSaver.directoryExists(mailPath)) {
           console.log('✅ Saved!\n');
           totalMails++;
         } else {
           console.log('❌ Fail!\n');
+          console.log(mailPath);
           failedMails++;
         }
       }
@@ -130,11 +109,13 @@ class App {
       page++;
     }
 
-    console.log(
-      `🎉 Finished saving ${totalMails} new ${
-        totalMails > 2 ? 'mails' : 'mail'
-      }!`
-    );
+    if (totalMails && !failedMails) {
+      console.log(
+        `🎉 Finished saving ${totalMails} new ${
+          totalMails > 2 ? 'mails' : 'mail'
+        }!`
+      );
+    }
 
     if (failedMails) {
       console.log(

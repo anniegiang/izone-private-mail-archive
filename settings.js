@@ -4,7 +4,8 @@ dotenv.config();
 const app = {
   apiHost: `${process.env.PM_API_HOST}${process.env.PM_API_VERSION}`,
   appHost: process.env.PM_APP_HOST,
-  destinationFolder: process.env.DESTINATION_FOLDER,
+  mailFolder: process.env.MAIL_FOLDER,
+  imagesFolder: process.env.IMAGES_FOLDER,
 };
 
 const endpoints = {
