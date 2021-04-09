@@ -76,7 +76,6 @@ class App {
     let failedMails = 0;
 
     while (!done) {
-      const inbox = await this.PMApi.getInbox();
       const inbox = await this.PMApi.getInbox(page);
 
       if (inbox.error || !inbox.data.mails) {
