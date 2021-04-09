@@ -1,6 +1,7 @@
 ### IZ\*ONE Private Mail Archive (Node)
 
-Last updated: April 4, 2021
+Last updated: April 8, 2021
+README last updated: April 4, 2021
 #### Intro
 
 PM officially announced service will be terminated on May 31, 2021, and the members will stop sending mail on April 28, 2021. This script will likely stop working when service is terminated.
