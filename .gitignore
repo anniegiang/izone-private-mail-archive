@@ -1,5 +1,6 @@
 .env
 /node_modules
+.DS_Store
 _data.js
 /out
 _index.html

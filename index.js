@@ -76,6 +76,7 @@ class App {
     let failedMails = 0;
 
     while (!done) {
+      const inbox = await this.PMApi.getInbox();
       const inbox = await this.PMApi.getInbox(page);
 
       if (inbox.error || !inbox.data.mails) {
@@ -124,7 +125,7 @@ class App {
       page++;
     }
 
-    if (totalMails && !failedMails) {
+    if (!failedMails) {
       console.log(
         `🎉 Finished saving ${totalMails} new ${
           totalMails > 2 ? 'mails' : 'mail'
