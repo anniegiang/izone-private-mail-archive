@@ -1,4 +1,4 @@
-.mail-image-container {
+.mail-container {
   display: flex;
   justify-content: space-between;
   padding: 15px;
@@ -6,7 +6,7 @@
   cursor: pointer;
 }
 
-.mail-image-container img {
+.mail-container img {
   width: 5rem;
   margin-right: 15px;
   border-radius: 50%;

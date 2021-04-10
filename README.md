@@ -10,7 +10,7 @@ README last updated: April 10, 2021
 4/10/2021
 - You can now view all you mails in `index.html`. If you have ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
 
-4/9/2021
+4/8/2021
 - Removed mail subject from the file name of mails. Please delete all your mails in your output folder, and re-run `npm run start`
 #### Intro
 
