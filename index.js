@@ -72,8 +72,7 @@ class App {
 
     let done = false;
     let page = 1;
-    let totalMails = 0;
-    let failedMails = 0;
+    let allMails = [];
 
     while (!done) {
       const inbox = await this.PMApi.getInbox(page);
@@ -84,37 +83,7 @@ class App {
         break;
       }
 
-      for (const mail of inbox.data.mails) {
-        const htmlFileName = this.MailSaver.fileName(mail);
-        const memberDir = path.join(directory, mail.member.realname_ko);
-        const mailPath = path.join(memberDir, htmlFileName);
-
-        if (this.MailSaver.directoryExists(mailPath)) {
-          continue;
-        }
-
-        const imagesPath = path.join(memberDir, this.settings.app.imagesFolder);
-        this.MailSaver.makeDirectory(memberDir);
-        this.MailSaver.makeDirectory(imagesPath);
-
-        const { member } = mail;
-        await this.MailSaver.addMember(member);
-
-        const mailDetails = await this.PMApi.getMailDetail(mail.id);
-        mail.mailDetailsHTMLString = mailDetails.data;
-
-        console.log(`📩 Saving ${member.realname_ko} - ${htmlFileName}`);
-
-        await this.MailSaver.saveMail(mail, mailPath, imagesPath, (error) => {
-          if (error) {
-            console.log('❌ Fail!\n', error);
-            failedMails++;
-          } else {
-            console.log('✅ Saved!\n');
-            totalMails++;
-          }
-        });
-      }
+      allMails.push(...inbox.data.mails);
 
       if (!inbox.data.has_next_page) {
         done = true;
@@ -122,6 +91,43 @@ class App {
       }
 
       page++;
+    }
+
+    let totalMails = 0;
+    let failedMails = 0;
+    const reversedMails = allMails.reverse(); //oldest to newest
+
+    for (const mail of reversedMails) {
+      const htmlFileName = this.MailSaver.fileName(mail);
+      const memberDir = path.join(directory, mail.member.realname_ko);
+      const mailPath = path.join(memberDir, htmlFileName);
+
+      if (this.MailSaver.directoryExists(mailPath)) {
+        continue;
+      }
+
+      const imagesPath = path.join(memberDir, this.settings.app.imagesFolder);
+      this.MailSaver.makeDirectory(memberDir);
+      this.MailSaver.makeDirectory(imagesPath);
+
+      const { member } = mail;
+      await this.MailSaver.addMember(member);
+
+      const mailDetails = await this.PMApi.getMailDetail(mail.id);
+      mail.mailDetailsHTMLString = mailDetails.data;
+
+      console.log(`📩 Saving ${member.realname_ko} - ${htmlFileName}`);
+
+      await this.MailSaver.saveMail(mail, mailPath, imagesPath, (error) => {
+        if (error) {
+          console.log('❌ Fail!\n', error);
+          failedMails++;
+        } else {
+          console.log('✅ Saved!\n');
+          totalMails++;
+          this.MailSaver.createMailView(mail, mailPath);
+        }
+      });
     }
 
     if (!failedMails) {
