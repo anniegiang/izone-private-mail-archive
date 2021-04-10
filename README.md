@@ -3,7 +3,7 @@
 ### ***Fetch, save, and view all your private mails.***
 
 Latest release: April 10, 2021 <br />
-README last updated: April 4, 2021
+README last updated: April 10, 2021
 
 #### Release logs
 
