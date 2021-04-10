@@ -1,4 +1,4 @@
-### IZ\*ONE Private Mail Archive (Node)
+### IZ\*ONE Private Mail Backup (Node)
 
 ### ***Fetch, save, and view all your private mails.***
 
