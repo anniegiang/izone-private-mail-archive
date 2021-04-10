@@ -8,7 +8,7 @@ README last updated: April 10, 2021
 #### Release logs
 
 4/10/2021
-- You can now view all you mails in `index.html`. If you have ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
+- You can now view all you mails in `index.html` after mails are fetched and saved. If you have ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
 
 4/8/2021
 - Removed mail subject from the file name of mails. Please delete all your mails in your output folder, and re-run `npm run start`
@@ -33,7 +33,7 @@ This script fetches every single mail you have ever received from the members yo
 5. View all your mails by opening `index.html` (this file should open in your default browser)
 
 #### Folder structure
-`index.html` => A list of all your mails  (viewable in the browser)
+`index.html` => A list of all your mails after fetching and saving your mails  (viewable in the browser)
 <br />
 `out/memberKoreanName/` => individual HTML mails 
 <br />
