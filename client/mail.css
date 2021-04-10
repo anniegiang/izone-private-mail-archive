@@ -1,0 +1,44 @@
+.mail-content-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 15px;
+  border-bottom: 1px solid Gainsboro;
+}
+
+.mail-content-image-container {
+  display: flex;
+}
+
+.mail-content-image-container img {
+  width: 3rem;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.mail-content-member-name {
+  margin: 0;
+}
+
+.mail-content-user-name {
+  font-weight: lighter;
+  margin: 0;
+}
+
+.mail-content-user-name span {
+  color: gray;
+}
+
+.mail-content-mail-date {
+  color: silver;
+  font-weight: lighter;
+  margin: 0;
+}
+
+.mail-content-subject-container {
+  padding: 20px 15px;
+  border-bottom: 1px solid Gainsboro;
+}
+
+.mail-content-subject {
+  margin: 0;
+}
