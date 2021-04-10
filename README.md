@@ -1,6 +1,6 @@
 ### IZ\*ONE Private Mail Archive (Node)
 
-##### Fetch, save, and view all your private mails.
+### ***Fetch, save, and view all your private mails.***
 
 Latest release: April 10, 2021 <br />
 README last updated: April 4, 2021
