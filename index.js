@@ -96,6 +96,7 @@ class App {
     let totalMails = 0;
     let failedMails = 0;
     const reversedMails = allMails.reverse(); //oldest to newest
+    const indexPath = path.join(__dirname, this.settings.app.mailViewerFile);
 
     for (const mail of reversedMails) {
       const htmlFileName = this.MailSaver.fileName(mail);
@@ -125,7 +126,7 @@ class App {
         } else {
           console.log('✅ Saved!\n');
           totalMails++;
-          this.MailSaver.createMailView(mail, mailPath);
+          this.MailSaver.createMailView(mail, mailPath, indexPath);
         }
       });
     }

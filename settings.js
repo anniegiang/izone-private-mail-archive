@@ -7,6 +7,7 @@ const app = {
   appHost: 'https://app-web.izone-mail.com',
   imagesFolder: 'images',
   mailFolder: userSettings.mailFolderName || process.env.MAIL_FOLDER,
+  mailViewerFile: process.env.MAIL_VIEWER_FILE || 'index.html',
 };
 
 const endpoints = {
