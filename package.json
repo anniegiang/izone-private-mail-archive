@@ -1,7 +1,7 @@
 {
   "name": "izone-private-mail-archive",
   "version": "1.0.0",
-  "description": "IZONE Private Mail Archive",
+  "description": "Backup mails from IZ*ONE's Private Mail app.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/anniegiang/izone-private-mail-archive.git"
   },
-  "author": "",
+  "author": {
+    "name": "Annie Giang",
+    "email": "annieg4123@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/anniegiang/izone-private-mail-archive/issues"
