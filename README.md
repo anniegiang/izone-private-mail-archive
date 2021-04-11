@@ -4,7 +4,7 @@
 ### ***Fetch, save, and view all your private mails.***
 
 Latest release: April 10, 2021 <br />
-README last updated: April 10, 2021
+README last updated: April 11, 2021
 
 #### Release logs 
 
@@ -33,14 +33,21 @@ This script fetches every single mail you have ever received from the members yo
 2. Open `userSettings.js` and fill in your info
 3. `npm install`
 4. `npm run start` (run this when you want to get the latest mail)
-5. View all your mails by opening `index.html` (this file should open in your default browser)
+
+All mails are saved as a static `html` file in the output folder specified in `userSettings.js`. Each mail can be viewable in the browser.
+
+
+After mails are fetched from PM's server and saved as  `html` files, there are two ways to view mail: 
+
+1. View all your mails at once by opening `index.html` in the browser. Don't use any live server clients to open it.
+
+2. Open mails individually from the output folder.
+
+***Don't modify the file names, as the script uses them to save mails efficiently, and to know if your inbox is updated or not.***
 
 #### Folder structure
 `index.html` => A list of all your mails after fetching and saving your mails  (viewable in the browser)
 <br />
-`out/memberKoreanName/` => individual HTML mails 
+`out/memberKoreanName/` => individual `html` mail files
 <br />
 `out/memberKoreanName/images` => individual images live here
-
-***Don't modify the file names, as the script uses them to save mails efficiently, and to know if your inbox is updated or not.***
-
