@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const settings = require('./settings');
 const PMApi = require('./lib/pmApi');
@@ -42,6 +43,7 @@ class App {
     }
 
     const directory = path.join(__dirname, this.settings.app.mailFolder);
+    await this.MailSaver.makeDirectory(directory);
 
     const { mails } = initialInbox.data;
     const latestMail = mails[0];
@@ -51,9 +53,7 @@ class App {
       this.MailSaver.fileName(latestMail)
     );
 
-    this.MailSaver.makeDirectory(directory);
-
-    if (this.MailSaver.directoryExists(latestMailPath)) {
+    if (await this.MailSaver.directoryExists(latestMailPath)) {
       console.log(`✅  No new mail, lastest mail is ${latestMail.id}.`);
       return;
     }
@@ -103,13 +103,13 @@ class App {
       const memberDir = path.join(directory, mail.member.realname_ko);
       const mailPath = path.join(memberDir, htmlFileName);
 
-      if (this.MailSaver.directoryExists(mailPath)) {
+      if (await this.MailSaver.directoryExists(mailPath)) {
         continue;
       }
 
       const imagesPath = path.join(memberDir, this.settings.app.imagesFolder);
-      this.MailSaver.makeDirectory(memberDir);
-      this.MailSaver.makeDirectory(imagesPath);
+      await this.MailSaver.makeDirectory(memberDir);
+      await this.MailSaver.makeDirectory(imagesPath);
 
       const { member } = mail;
       await this.MailSaver.addMember(member);
@@ -119,16 +119,21 @@ class App {
 
       console.log(`📩 Saving ${member.realname_ko} - ${htmlFileName}`);
 
-      await this.MailSaver.saveMail(mail, mailPath, imagesPath, (error) => {
-        if (error) {
-          console.log('❌ Fail!\n', error);
-          failedMails++;
-        } else {
-          console.log('✅ Saved!\n');
-          totalMails++;
-          this.MailSaver.createMailView(mail, mailPath, indexPath);
+      await this.MailSaver.saveMail(
+        mail,
+        mailPath,
+        imagesPath,
+        async (error) => {
+          if (error) {
+            console.log('❌ Fail!\n', error);
+            failedMails++;
+          } else {
+            console.log('✅ Saved!\n');
+            totalMails++;
+            await this.MailSaver.createMailView(mail, mailPath, indexPath);
+          }
         }
-      });
+      );
     }
 
     if (!failedMails) {
