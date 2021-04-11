@@ -1,20 +1,23 @@
-### IZ\*ONE Private Mail Backup (Node)
+### IZ\*ONE Private Mail Backup (Node) 
+### 아이즈원 프라이빗 메일 백업
 
 ### ***Fetch, save, and view all your private mails.***
 
 Latest release: April 10, 2021 <br />
 README last updated: April 10, 2021
 
-#### Release logs
+#### Release logs 
+
+Pull or rebase the `master` branch for the latest changes.
 
 4/10/2021
-- You can now view all you mails in `index.html` after mails are fetched and saved. If you have ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
+- You can now view all you mails in `index.html` after mails are fetched and saved. If you ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
 
 4/8/2021
 - Removed mail subject from the file name of mails. Please delete all your mails in your output folder, and re-run `npm run start`
 #### Intro
 
-PM officially announced service will be terminated on May 31, 2021 (JST), and the members will stop sending mail on April 28, 2021 (JST). This script will likely stop working when service is terminated.
+PM officially announced service will be terminated on May 31, 2021, 23:59 (JST), and the members will stop sending mail on April 28, 2021, 23:59 (JST). This script will likely stop working when service is terminated.
 
 This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which can be viewable indefinitely. All images are downloaded from PM's server, and saved as an image file.
 
