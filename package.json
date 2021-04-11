@@ -7,7 +7,8 @@
     "start": "node index.js",
     "lint": "eslint --fix",
     "format": "prettier --write .",
-    "prepare": "npm run lint && npm run format"
+    "clean-code": "npm run lint && npm run format",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "eslint": "^7.24.0",
+    "husky": "^6.0.0",
     "prettier": "2.2.1"
   }
 }
