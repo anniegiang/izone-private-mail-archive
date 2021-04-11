@@ -10,7 +10,8 @@
 }
 
 .mail-content-image-container img {
-  width: 3rem;
+  width: 60px;
+  height: 60px;
   margin-right: 10px;
   border-radius: 50%;
 }
