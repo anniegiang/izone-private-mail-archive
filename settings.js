@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = {
-  apiHost: `https://app-api.izone-mail.com/v1`,
+  apiHost: 'https://app-api.izone-mail.com/v1',
   appHost: 'https://app-web.izone-mail.com',
   imagesFolder: 'images',
   mailFolder: userSettings.mailFolderName || process.env.MAIL_FOLDER,
@@ -13,7 +13,6 @@ const app = {
 const endpoints = {
   inbox: '/inbox',
   mail: '/mail',
-  members: '/menu',
   users: '/users',
 };
 
