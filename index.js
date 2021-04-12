@@ -46,9 +46,12 @@ class App {
 
     console.log(`💌 Fetching mails for ${user.nickname}...\n`);
 
+    const localMails = await this.MailSaver.localMails(directory);
+
     let done = false;
     let page = 1;
     let allMails = [];
+    let latestMail;
 
     while (!done) {
       const inbox = await this.PMApi.getInbox(page);
@@ -61,18 +64,9 @@ class App {
 
       if (page === 1) {
         const newestMail = inbox.data.mails[0];
-        const koreanName = newestMail.member.realname_ko;
-        const newestMailPath = path.join(
-          directory,
-          koreanName,
-          this.MailSaver.fileName(newestMail)
-        );
 
-        if (await this.MailSaver.directoryExists(newestMailPath)) {
-          console.log(
-            `✅  No new mail, lastest mail is from ${koreanName} (${newestMail.id}).`
-          );
-          return;
+        if (localMails.includes(newestMail.id)) {
+          latestMail = newestMail;
         }
       }
 
@@ -91,12 +85,14 @@ class App {
     const reversedMails = allMails.reverse(); //oldest to newest
     const indexPath = path.join(__dirname, this.settings.app.mailViewerFile);
 
+    await this.MailSaver.buildIndexPage(indexPath);
+
     for (const mail of reversedMails) {
       const htmlFileName = this.MailSaver.fileName(mail);
       const memberDir = path.join(directory, mail.member.realname_ko);
       const mailPath = path.join(memberDir, htmlFileName);
 
-      if (await this.MailSaver.directoryExists(mailPath)) {
+      if (localMails.includes(mail.id)) {
         continue;
       }
 
@@ -117,7 +113,7 @@ class App {
         mailPath,
         imagesPath,
         async (error) => {
-          if (error) {
+          if (error) {r
             console.log('❌ Fail!\n', error);
             failedMails++;
           } else {
@@ -129,13 +125,17 @@ class App {
       );
     }
 
-    if (!failedMails) {
+    if (latestMail) {
       console.log(
-        `🎉 Finished saving ${totalMails} new ${
-          totalMails > 2 ? 'mails' : 'mail'
-        }!`
+        `✅  No new mail, lastest mail is from ${latestMail.member.realname_ko} (${latestMail.id}).`
       );
     }
+
+    console.log(
+      `🎉 Finished saving ${totalMails} new ${
+        totalMails > 2 ? 'mails' : 'mail'
+      }!`
+    );
 
     if (failedMails) {
       console.log(
