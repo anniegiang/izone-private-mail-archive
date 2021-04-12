@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const settings = require('./settings');
 const PMApi = require('./lib/pmApi');
@@ -32,31 +31,8 @@ class App {
       return;
     }
 
-    const initialInbox = await this.PMApi.getInbox();
-
-    if (initialInbox.error || !initialInbox.data.mails) {
-      console.error(
-        '❗️ There was an error getting your inbox: ',
-        initialInbox
-      );
-      return;
-    }
-
     const directory = path.join(__dirname, this.settings.app.mailFolder);
     await this.MailSaver.makeDirectory(directory);
-
-    const { mails } = initialInbox.data;
-    const latestMail = mails[0];
-    const latestMailPath = path.join(
-      directory,
-      `${latestMail.member.realname_ko}`,
-      this.MailSaver.fileName(latestMail)
-    );
-
-    if (await this.MailSaver.directoryExists(latestMailPath)) {
-      console.log(`✅  No new mail, lastest mail is ${latestMail.id}.`);
-      return;
-    }
 
     const userProfileResponse = await this.PMApi.getProfile();
 
@@ -73,6 +49,7 @@ class App {
     let done = false;
     let page = 1;
     let allMails = [];
+    let newestMail;
 
     while (!done) {
       const inbox = await this.PMApi.getInbox(page);
@@ -81,6 +58,24 @@ class App {
         console.error('❗️ There was an error getting your inbox: ', inbox);
         done = true;
         break;
+      }
+
+      if (page === 1) {
+        newestMail = inbox.data.mails[0];
+        const newestMailPath = path.join(
+          directory,
+          `${newestMail.member.realname_ko}`,
+          this.MailSaver.fileName(newestMail)
+        );
+
+        const newestMailExists = await this.MailSaver.directoryExists(
+          newestMailPath
+        );
+
+        if (newestMailExists) {
+          console.log(`✅  No new mail, lastest mail is ${newestMail.id}.`);
+          return;
+        }
       }
 
       allMails.push(...inbox.data.mails);
