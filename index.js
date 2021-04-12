@@ -49,7 +49,6 @@ class App {
     let done = false;
     let page = 1;
     let allMails = [];
-    let newestMail;
 
     while (!done) {
       const inbox = await this.PMApi.getInbox(page);
@@ -61,19 +60,18 @@ class App {
       }
 
       if (page === 1) {
-        newestMail = inbox.data.mails[0];
+        const newestMail = inbox.data.mails[0];
+        const koreanName = newestMail.member.realname_ko;
         const newestMailPath = path.join(
           directory,
-          `${newestMail.member.realname_ko}`,
+          koreanName,
           this.MailSaver.fileName(newestMail)
         );
 
-        const newestMailExists = await this.MailSaver.directoryExists(
-          newestMailPath
-        );
-
-        if (newestMailExists) {
-          console.log(`✅  No new mail, lastest mail is ${newestMail.id}.`);
+        if (await this.MailSaver.directoryExists(newestMailPath)) {
+          console.log(
+            `✅  No new mail, lastest mail is from ${koreanName} (${newestMail.id}).`
+          );
           return;
         }
       }
