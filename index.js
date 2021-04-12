@@ -113,7 +113,7 @@ class App {
         mailPath,
         imagesPath,
         async (error) => {
-          if (error) {r
+          if (error) {
             console.log('❌ Fail!\n', error);
             failedMails++;
           } else {
