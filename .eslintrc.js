@@ -11,7 +11,7 @@ module.exports = {
     es6: true,
   },
   rules: {
-    quotes: ['error', 'single'],
+    quotes: ['error', 'single', { avoidEscape: false }],
     semi: ['error', 'always'],
   },
 };

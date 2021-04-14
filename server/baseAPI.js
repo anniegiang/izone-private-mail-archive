@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-class Api {
+class BaseAPI {
   constructor(apiConfig) {
     this.httpClient = axios.create(apiConfig);
   }
@@ -55,4 +55,4 @@ class Api {
   }
 }
 
-module.exports = Api;
+module.exports = BaseAPI;
