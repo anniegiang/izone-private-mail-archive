@@ -73,6 +73,7 @@ class App extends Context {
         page++;
       }
 
+      const members = {};
       let totalMails = 0;
       let failedMails = 0;
       const reversedMails = allMails.reverse(); //oldest to newest
@@ -93,12 +94,18 @@ class App extends Context {
         const mailDetails = await this.pmController.getMailDetail(mailObj.id);
         mailObj.setMailDetails(mailDetails.data);
 
-        const member = new Member(mail.member);
-        const imageResponse = await this.pmController.downloadImage(
-          member.imageUrl
-        );
+        let member;
 
-        member.setImageUrl(imageResponse.base64String);
+        if (members[mail.member.id]) {
+          member = members[mail.member.id];
+        } else {
+          member = new Member(mail.member);
+          const imageResponse = await this.pmController.downloadImage(
+            member.imageUrl
+          );
+          member.setImageUrl(imageResponse.base64String);
+          member[member.id] = member;
+        }
 
         const newMail = new MailBuilder(mailObj, member, user);
         await newMail.setupMemberDirectory();
@@ -118,7 +125,7 @@ class App extends Context {
 
       if (latestMail) {
         console.log(
-          `✅  No new mail, lastest mail is from ${latestMail.name} (${latestMail.id}).`
+          `✅  No new mail, lastest mail is from ${latestMember.name} (${latestMail.id}).`
         );
       }
 
