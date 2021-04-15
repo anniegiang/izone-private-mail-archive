@@ -18,7 +18,7 @@ class Database {
   }
 
   async writeFile(path, data, dataType) {
-    return fs.promises.writeFile(path, data, dataType);
+    await fs.promises.writeFile(path, data, dataType);
   }
 
   async readFile(path, data, dataType) {

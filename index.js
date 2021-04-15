@@ -112,15 +112,17 @@ class App extends Context {
 
         console.log(`📩 Saving ${member.name} - ${mailObj.fileName}`);
 
-        const saveStatus = await newMail.saveMail();
-        if (saveStatus === true) {
-          console.log('✅ Saved!\n');
-          totalMails++;
-          await mailView.createMailView(newMail.mailPath, mailObj, member);
-        } else {
-          console.log('❌ Fail!\n');
-          failedMails++;
-        }
+        await newMail.saveMail(async function(error) {
+          if (!error) {
+            console.log('fuck', error);
+            console.log('✅ Saved!\n');
+            await mailView.createMailView(newMail.mailPath, mailObj, member);
+            totalMails++;
+          } else {
+            console.log('❌ Fail!\n');
+            failedMails++;
+          }
+        });
       }
 
       if (latestMail) {

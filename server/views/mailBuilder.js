@@ -30,7 +30,7 @@ class MailBuilder extends Context {
     this.memberImagesDirectory = memberImagesDirectory;
   }
 
-  async saveMail() {
+  async saveMail(cb) {
     const dom = new JSDOM(this.mail.mailDetails);
     const { document } = dom.window;
 
@@ -51,14 +51,8 @@ class MailBuilder extends Context {
     link.href = path.join(__dirname, '../../client/mail.css');
 
     document.querySelector('head').appendChild(link);
-
-    try {
-      await this.storeMail(this.mailPath, dom.serialize(), 'utf-8');
-      return true;
-    } catch (error) {
-      console.error(`Error saving mail ${this.mail.id}`, error);
-      return false;
-    }
+  
+    await this.storeMail(this.mailPath, dom.serialize(), 'utf-8', cb);
   }
 
   async convertAndSaveImages(imgs) {
@@ -89,13 +83,13 @@ class MailBuilder extends Context {
     );
   }
 
-  async storeMail(path, data, dataType) {
+  async storeMail(path, data, dataType, cb) {
     try {
       await this.database.writeFile(path, data, dataType);
-      return true;
+      return cb();
     } catch (error) {
       console.error(`❗️  Error saving mail ${path} `, error);
-      return false;
+      return cb(error);
     }
   }
 
