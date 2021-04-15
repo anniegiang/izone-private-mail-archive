@@ -114,7 +114,6 @@ class App extends Context {
 
         await newMail.saveMail(async function(error) {
           if (!error) {
-            console.log('fuck', error);
             console.log('✅ Saved!\n');
             await mailView.createMailView(newMail.mailPath, mailObj, member);
             totalMails++;
