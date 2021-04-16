@@ -3,12 +3,15 @@
 
 ### ***Fetch, save, and view all your private mails.***
 
-Latest release: April 11, 2021 <br />
-README last updated: April 11, 2021
+Latest release: April 14, 2021 <br />
+README last updated: April 14, 2021
 
 #### Release logs 
 
 Pull or rebase the `master` branch for the latest changes.
+
+4/14/2021
+- Can now customize the file name of mails in `userSettings.js` (date and subject).  
 
 4/11/2021
 - By default mail file names will now include the mail subject. For example: `m12121__Mon-Oct-29-2018__안녕🖐__.html`.
