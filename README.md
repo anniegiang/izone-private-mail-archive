@@ -1,7 +1,7 @@
 # IZ\*ONE Private Mail Backup 아이즈원 프라이빗 메일 백업 (Node) 
 ### A simple script to fetch, save, and view all your private mails.
 
-![](assets/script.gif)
+![](assets/save.gif)
 ![](assets/pm.gif)
 
 
@@ -29,10 +29,26 @@ This script fetches every single mail you have ever received from the members yo
   - Located in the HTTP request header. The header can be captured using a proxy.
 
 ## Steps
-1. Clone or download this repo
-2. Open `userSettings.js` and fill in your info
+1. Clone or download this repo <br />
+`git clone https://github.com/anniegiang/izone-private-mail-archive.git`
+2. Open `userSettings.js` and fill in your info:
+```
+// userSettings.js
+
+module.exports = {
+  userId: 'your_user_id',
+  accessToken: 'your_access_token',
+  mailFolderName: 'out', // by default
+  mailFileName: { 
+    date: true,
+    subject: true,
+  }
+};
+
+```
 3. `npm install`
 4. `npm run start` (run this when you want to get the latest mail)
+
 
 All mails are saved as a static `html` file in the output folder specified in `userSettings.js`. Each mail can be viewable in the browser.
 
