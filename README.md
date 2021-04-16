@@ -33,7 +33,6 @@ This script fetches every single mail you have ever received from the members yo
 `git clone https://github.com/anniegiang/izone-private-mail-archive.git`
 2. Open `userSettings.js` and fill in your info: <br />
 ![](assets/settings-example.png)
-```
 3. `npm install`
 4. `npm run start` (run this when you want to get the latest mail)
 
