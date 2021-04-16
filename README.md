@@ -1,7 +1,5 @@
-### IZ\*ONE Private Mail Backup 아이즈원 프라이빗 메일 백업 (Node) 
-### A simple script to fetch, save, and view all your private mails.
-
- <br /> 
+## IZ\*ONE Private Mail Backup 아이즈원 프라이빗 메일 백업 (Node) 
+## A simple script to fetch, save, and view all your private mails.
 
 ***Latest release: [April 14, 2021](#release-logs)*** <br /> 
 ***README last updated: April 14, 2021***
@@ -16,20 +14,20 @@
 
 
 
-#### Intro
+### Intro
 
 PM officially announced service will be terminated on May 31, 2021, 23:59 (JST), and the members will stop sending mail on April 28, 2021, 23:59 (JST). This script will likely stop working when service is terminated.
 
 This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which can be viewable indefinitely. All images are downloaded from PM's server, and saved as an image file.
 
-#### Pre-reqs
+### Pre-reqs
 - npm
 - Node.js
 - Private Mail user ID (in the app's settings)
 - Private Mail acess token
   - Located in the HTTP request header. The header can be captured using a proxy.
 
-#### Steps
+### Steps
 1. Clone or download this repo
 2. Open `userSettings.js` and fill in your info
 3. `npm install`
@@ -46,14 +44,14 @@ After mails are fetched from PM's server and saved as  `html` files, there are t
 
 ***Always keep the mail id at the start of mail html files, as the script uses them to save mails efficiently, and to know if your inbox is updated or not.***
 
-#### Folder structure
+### Folder structure
 `index.html` => A list of all your mails after fetching and saving your mails  (viewable in the browser)
 <br />
 `out/memberKoreanName/` => individual `html` mail files
 <br />
 `out/memberKoreanName/images` => individual images live here
 
-#### Release logs 
+### Release logs 
 
 Pull or rebase the `master` branch for the latest changes.
 
@@ -70,7 +68,7 @@ Pull or rebase the `master` branch for the latest changes.
 - You can now view all you mails in `index.html` after mails are fetched and saved. If you ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
 
 
-#### Troubleshooting
+### Troubleshooting
 
 `Error saving mail, [Error: EILSEQ: illegal byte sequence]`
 - This may happen if the the mail's filename has emojis. Try configuring your machine to accept special encoded characters and convert them to be UTF-8. Or, go to `userSettings.js` and set `mailFileName.subject` to be `false` to remove the mail subject from the filename.
