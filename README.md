@@ -2,7 +2,7 @@
 ### A simple script to fetch, save, and view all your private mails.
 
 ***Latest release: [April 14, 2021](#release-logs)*** <br /> 
-***README last updated: April 14, 2021***
+***README last updated: April 15, 2021***
 
 * [Intro](#intro)
 * [Pre-reqs](#pre-reqs)
