@@ -52,16 +52,16 @@ After mails are fetched from PM's server and saved as  `html` files, there are t
 
 Pull or rebase the `master` branch for the latest changes.
 
-4/14/2021
+### 4/14/2021
 - Can now customize the filename of mails in `userSettings.js` (date and subject).  
 
-4/11/2021
+### 4/11/2021
 - By default mail filenames will now include the mail subject. For example: `m12121__Mon-Oct-29-2018__안녕🖐__.html`.
 - Renaming mail filenames is now ok, but names must still begin with the mail id.
 - `index.html` file will now be created at the initial inbox fetch.
 - Fetches used to terminate if the newest mail is already saved. Now, each fetch will not terminate early to ensure your inbox is not only updated, but is also completely full.
 
-4/10/2021
+### 4/10/2021
 - You can now view all you mails in `index.html` after mails are fetched and saved. If you ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
 
 
