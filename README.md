@@ -1,6 +1,10 @@
 # IZ\*ONE Private Mail Backup 아이즈원 프라이빗 메일 백업 (Node) 
 ### A simple script to fetch, save, and view all your private mails.
 
+![](assets/script.gif)
+![](assets/pm.gif)
+
+
 ***Latest release: [April 14, 2021](#release-logs)*** <br /> 
 ***README last updated: April 15, 2021***
 
