@@ -42,14 +42,14 @@ All mails are saved as a static `html` file in the output folder specified in `u
 
 After mails are fetched from PM's server and saved as  `html` files, there are two ways to view mail: 
 
-1. View all your mails at once by opening `index.html` in the browser. Don't use any live server clients to open it.
+1. View all your mails at once by opening `out/index.html` in the browser. Don't use any live server clients to open it.
 
 2. Open mails individually from the output folder.
 
 ***Always keep the mail id at the start of mail html files, as the script uses them to save mails efficiently, and to know if your inbox is updated or not.***
 
 ## Folder structure
-`index.html` => A list of all your mails after fetching and saving your mails  (viewable in the browser)
+`out/index.html` => A list of all your mails after fetching and saving your mails  (viewable in the browser)
 <br />
 `out/memberKoreanName/` => individual `html` mail files
 <br />
@@ -65,11 +65,11 @@ Pull or rebase the `master` branch for the latest changes.
 ### 4/11/2021
 - By default mail filenames will now include the mail subject. For example: `m12121__Mon-Oct-29-2018__안녕🖐__.html`.
 - Renaming mail filenames is now ok, but names must still begin with the mail id.
-- `index.html` file will now be created at the initial inbox fetch.
+- `out/index.html` file will now be created at the initial inbox fetch.
 - Fetches used to terminate if the newest mail is already saved. Now, each fetch will not terminate early to ensure your inbox is not only updated, but is also completely full.
 
 ### 4/10/2021
-- You can now view all you mails in `index.html` after mails are fetched and saved. If you ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
+- You can now view all you mails in `out/index.html` after mails are fetched and saved. If you ran the script before, please delete all your mails in your output folder, and re-reun `npm run start`. 
 
 
 ## Troubleshooting
