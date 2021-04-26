@@ -2,7 +2,7 @@ const userSettings = require('./userSettings');
 
 const fileName = (mail, mimeType = 'html', key = '') => {
   const { mailFileName } = userSettings;
-  
+
   let fileName = `${mail.id}__`;
 
   if (mailFileName.date) {

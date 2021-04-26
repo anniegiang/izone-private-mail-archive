@@ -2,8 +2,8 @@ module.exports = {
   userId: '',
   accessToken: '',
   mailFolderName: 'out', // by default
-  mailFileName: { 
+  mailFileName: {
     date: true,
     subject: true,
-  }
+  },
 };

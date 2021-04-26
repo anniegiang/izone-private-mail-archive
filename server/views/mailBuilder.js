@@ -51,7 +51,7 @@ class MailBuilder extends Context {
     link.href = path.join(__dirname, '../../client/mail.css');
 
     document.querySelector('head').appendChild(link);
-  
+
     await this.storeMail(this.mailPath, dom.serialize(), 'utf-8', cb);
   }
 
