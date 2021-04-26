@@ -115,15 +115,10 @@ class App extends Context {
         await newMail.saveMail(async function (error, encoded) {
           if (!error || encoded) {
             console.log('✅ Saved!\n');
-            if (!encoded) {
-              await mailView.createMailView(newMail.mailPath, mailObj, member);
-            } else {
-              await mailView.createMailView(
-                encodeFullFilePath(newMail.mailPath),
-                mailObj,
-                member
-              );
-            }
+            const mailPath = !encoded
+              ? newMail.mailPath
+              : encodeFullFilePath(newMail.mailPath);
+            await mailView.createMailView(mailPath, mailObj, member);
             totalMails++;
           } else {
             console.log('❌ Fail!\n');
