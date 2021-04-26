@@ -4,7 +4,7 @@ const Member = require('./server/models/member');
 const MailBuilder = require('./server/views/mailBuilder');
 const MailViewBuilder = require('./server/views/mailViewBuilder');
 const User = require('./server/models/user');
-
+const { encodeFullFilePath } = require('./utils');
 class App extends Context {
   constructor() {
     super();
@@ -112,10 +112,18 @@ class App extends Context {
 
         console.log(`📩 Saving ${member.name} - ${mailObj.fileName}`);
 
-        await newMail.saveMail(async function (error) {
-          if (!error) {
+        await newMail.saveMail(async function (error, encoded) {
+          if (!error || encoded) {
             console.log('✅ Saved!\n');
-            await mailView.createMailView(newMail.mailPath, mailObj, member);
+            if (!encoded) {
+              await mailView.createMailView(newMail.mailPath, mailObj, member);
+            } else {
+              await mailView.createMailView(
+                encodeFullFilePath(newMail.mailPath),
+                mailObj,
+                member
+              );
+            }
             totalMails++;
           } else {
             console.log('❌ Fail!\n');

@@ -3,7 +3,7 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 const Context = require('../context');
-const { fileName } = require('../../utils');
+const { fileName, encodeFullFilePath } = require('../../utils');
 
 class MailBuilder extends Context {
   constructor(mail, member, user) {
@@ -88,8 +88,17 @@ class MailBuilder extends Context {
       await this.database.writeFile(path, data, dataType);
       return cb();
     } catch (error) {
-      console.error(`❗️  Error saving mail ${path} `, error);
-      return cb(error);
+      const res = await this.database.writeFile(
+        encodeFullFilePath(path),
+        data,
+        dataType
+      );
+      if (!res) {
+        return cb(error, true);
+      } else {
+        console.error(`❗️  Error saving mail ${path} `, error);
+        return cb(error);
+      }
     }
   }
 
@@ -105,7 +114,14 @@ class MailBuilder extends Context {
     try {
       await this.database.writeFile(path, data, dataType);
     } catch (error) {
-      console.error(`❗️  Error saving image ${path} `, error);
+      const res = await this.database.writeFile(
+        encodeFullFilePath(path),
+        data,
+        dataType
+      );
+      if (res) {
+        console.error(`❗️  Error saving image ${path} `, error);
+      }
     }
   }
 

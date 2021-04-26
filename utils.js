@@ -23,4 +23,15 @@ const fileName = (mail, mimeType = 'html', key = '') => {
   return fileName.replace(/ /g, '-').replace(/\//g, '-');
 };
 
-module.exports = { fileName };
+const encodeFullFilePath = (path) => {
+  const reg = new RegExp('[mib][0-9]{5}');
+  const startIdx = path.search(reg);
+
+  const rootPath = path.slice(0, startIdx);
+  const fileName = path.slice(startIdx);
+  const encoded = encodeURIComponent(fileName);
+
+  return rootPath + encoded;
+};
+
+module.exports = { fileName, encodeFullFilePath };
