@@ -4,11 +4,45 @@ const { JSDOM } = jsdom;
 const Context = require('../context');
 
 class MailViewBuilder extends Context {
-  async createMailView(mailPath, mail, member) {
-    const index = await this.database.readFile(
-      this.database.indexFilePath,
-      'utf8'
+  async createMemberLink(linkLabel, link, destinationPath) {
+    const index = await this.database.readFile(destinationPath, 'utf8');
+    const indexDOM = new JSDOM(index);
+
+    const memberLinks = indexDOM.window.document.querySelectorAll(
+      '.member-link'
     );
+
+    for (const linkEl of memberLinks) {
+      if (linkEl.id.includes(linkLabel)) {
+        return;
+      }
+    }
+
+    const linkHTML = `<a class='member-link' id=${
+      linkLabel + '-member-link'
+    } href=${link}>${linkLabel}</a>`;
+
+    const linkDOM = new JSDOM(linkHTML, { runScripts: 'dangerously' });
+    const linkEl = linkDOM.window.document.querySelector(
+      `#${linkLabel}-member-link`
+    );
+
+    indexDOM.window.document.querySelector('#member-links').append(linkEl);
+
+    try {
+      await this.database.writeFile(
+        destinationPath,
+        `<!DOCTYPE html>${
+          indexDOM.window.document.querySelector('html').outerHTML
+        }`,
+        'utf8'
+      );
+    } catch (error) {
+      console.error('Error adding mail to member viewer: ', error);
+    }
+  }
+  async createMailView(mailPath, mail, member, indexPath) {
+    const index = await this.database.readFile(indexPath, 'utf8');
     const indexDOM = new JSDOM(index);
 
     const currentMails = indexDOM.window.document.querySelectorAll('.mail');
@@ -29,7 +63,7 @@ class MailViewBuilder extends Context {
 
     try {
       await this.database.writeFile(
-        this.database.indexFilePath,
+        indexPath,
         `<!DOCTYPE html>${
           indexDOM.window.document.querySelector('html').outerHTML
         }`,
@@ -40,7 +74,7 @@ class MailViewBuilder extends Context {
     }
   }
 
-  async buildIndexPage() {
+  async buildIndexPage(indexPath = this.database.indexFilePath) {
     const { document } = new JSDOM().window;
 
     const html = document.createElement('html');
@@ -49,7 +83,8 @@ class MailViewBuilder extends Context {
     const link = document.createElement('link');
     const script = document.createElement('script');
     const title = document.createElement('title');
-    const section = document.createElement('section');
+    const mails = document.createElement('section');
+    const memberLinks = document.createElement('section');
     const meta = document.createElement('meta');
     const viewPortMeta1 = document.createElement('meta');
     const viewPortMeta2 = document.createElement('meta');
@@ -68,7 +103,8 @@ class MailViewBuilder extends Context {
     script.src = path.join(__dirname, '../../client/index.js');
     link.href = path.join(__dirname, '../../client/mail-viewer.css');
     link.rel = 'stylesheet';
-    section.id = 'mails';
+    mails.id = 'mails';
+    memberLinks.id = 'member-links';
     title.textContent = 'IZ*ONE Private Mail';
 
     head.prepend(title);
@@ -78,22 +114,20 @@ class MailViewBuilder extends Context {
     head.prepend(viewPortMeta1);
     head.prepend(meta);
 
-    body.append(section);
+    body.append(memberLinks);
+    body.append(mails);
 
     html.append(head);
     html.append(body);
 
     try {
       await this.database.writeFile(
-        this.database.indexFilePath,
+        indexPath,
         `<!DOCTYPE html>${html.outerHTML}`,
         'utf-8'
       );
     } catch (error) {
-      console.error(
-        `❗️  Error saving document ${this.database.indexFilePath} `,
-        error
-      );
+      console.error(`❗️  Error saving document ${indexPath} `, error);
     }
   }
 }

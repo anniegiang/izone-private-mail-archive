@@ -110,15 +110,72 @@ class App extends Context {
         const newMail = new MailBuilder(mailObj, member, user);
         await newMail.setupMemberDirectory();
 
+        const memberIndexPath =
+          this.database.mailsDirectory + '/' + member.name + '/' + 'index.html';
+
+        if (!(await this.database.directoryExists(memberIndexPath))) {
+          await mailView.buildIndexPage(memberIndexPath);
+        }
+
         console.log(`📩 Saving ${member.name} - ${mailObj.fileName}`);
 
-        await newMail.saveMail(async function (error, encoded) {
+        await mailView.createMemberLink(
+          'All',
+          this.database.indexFilePath,
+          this.database.indexFilePath
+        );
+
+        await mailView.createMemberLink(
+          member.name,
+          memberIndexPath,
+          this.database.indexFilePath
+        );
+
+        const memberDirs = await this.database.memberDirectoryPaths();
+
+        await Promise.all(
+          memberDirs.map(async (dir) => {
+            await mailView.createMemberLink(
+              'All',
+              this.database.indexFilePath,
+              this.database.mailsDirectory + '/' + dir + '/' + 'index.html'
+            );
+          })
+        );
+
+        await Promise.all(
+          memberDirs.map(async (dir) => {
+            for (let dir2 of memberDirs) {
+              await mailView.createMemberLink(
+                dir2,
+                this.database.mailsDirectory + '/' + dir2 + '/' + 'index.html',
+                this.database.mailsDirectory + '/' + dir + '/' + 'index.html'
+              );
+            }
+          })
+        );
+
+        await newMail.saveMail(async (error, encoded) => {
           if (!error || encoded) {
             console.log('✅ Saved!\n');
             const mailPath = !encoded
               ? newMail.mailPath
               : encodeFullFilePath(newMail.mailPath);
-            await mailView.createMailView(mailPath, mailObj, member);
+
+            await mailView.createMailView(
+              mailPath,
+              mailObj,
+              member,
+              this.database.indexFilePath
+            );
+
+            await mailView.createMailView(
+              mailPath,
+              mailObj,
+              member,
+              memberIndexPath
+            );
+
             totalMails++;
           } else {
             console.log('❌ Fail!\n');

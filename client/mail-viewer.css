@@ -1,3 +1,13 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#mails {
+  margin-top: 3%;
+}
+
 .mail-container {
   display: flex;
   justify-content: space-between;
@@ -45,4 +55,23 @@
   font-weight: 400;
   color: gray;
   margin: 0;
+}
+
+#member-links {
+  background-color: #fff;
+  width: 100%;
+  padding: 20px;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.member-link {
+  color: #ff50a0;
+  padding-right: 10px;
+}
+
+.member-link:hover {
+  color: #ffabd3;
 }

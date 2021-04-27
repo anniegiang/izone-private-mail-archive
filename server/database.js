@@ -38,7 +38,24 @@ class Database {
     }
   }
 
-  async localMails(directory = this.mailsDirectory) {
+  async memberDirectoryPaths(directory = this.mailsDirectory) {
+    const dirs = await fs.promises.readdir(directory);
+
+    const memberPaths = await Promise.all(
+      dirs.map(async (file) => {
+        const newPath = path.join(directory, file);
+        const stat = await fs.promises.lstat(newPath);
+
+        if (stat.isDirectory()) {
+          return file;
+        }
+      })
+    );
+
+    return memberPaths.filter((path) => !!path);
+  }
+
+  async localMails(directory = this.mailsDirectory, fullPath = false) {
     const files = await fs.promises.readdir(directory);
 
     const htmlFiles = await Promise.all(
@@ -47,7 +64,7 @@ class Database {
         const stat = await fs.promises.lstat(newPath);
 
         if (stat.isDirectory()) {
-          return this.localMails(newPath);
+          return this.localMails(newPath, fullPath);
         }
 
         const parsedFile = path.parse(file);
@@ -56,15 +73,13 @@ class Database {
           parsedFile.ext === '.html' &&
           parsedFile.name !== 'index'
         ) {
-          return file;
+          return fullPath ? newPath : file;
         }
       })
     );
 
-    return htmlFiles
-      .flat()
-      .filter((file) => file !== undefined)
-      .map((file) => file.slice(0, 6));
+    const filtered = htmlFiles.flat().filter((file) => file !== undefined);
+    return fullPath ? filtered : filtered.map((file) => file.slice(0, 6));
   }
 }
 
