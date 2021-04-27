@@ -2,7 +2,7 @@ const userSettings = require('./userSettings');
 
 const MEMBER_NAMES = [
   '운영팀',
-  '관은비',
+  '권은비',
   '미야와키 사쿠라',
   '강혜원',
   '최예나',
