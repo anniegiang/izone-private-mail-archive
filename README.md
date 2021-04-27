@@ -30,6 +30,7 @@ This script fetches every single mail you have ever received from the members yo
   - Located in the HTTP request header. The header can be captured using a proxy.
 
 ## Steps
+0. Make sure you have all the [Pre-reqs](#pre-reqs)
 1. Clone or download this repo <br />
 `git clone https://github.com/anniegiang/izone-private-mail-archive.git`
 2. Open `userSettings.js` and fill in your info: <br />
