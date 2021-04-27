@@ -6,8 +6,8 @@
 
 ## Table of Contents
 
-***Latest release: [April 14, 2021](#release-logs)*** <br /> 
-***README last updated: April 15, 2021***
+***Latest release: [April 26, 2021](#release-logs)*** <br /> 
+***README last updated: April 26, 2021***
 
 * [Intro](#intro)
 * [Pre-reqs](#pre-reqs)
@@ -61,6 +61,8 @@ After mails are fetched from PM's server and saved as  `html` files, there are t
 
 Pull or rebase the `master` branch for the latest changes.
 
+### 4/26/2021
+- Navbar of links to see all mails or mails by member. Please delete your output folder and run `npm run start`.
 ### 4/14/2021
 - Can now customize the filename of mails in `userSettings.js` (date and subject).  
 
