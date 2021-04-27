@@ -1,3 +1,4 @@
+const path = require('path');
 const Context = require('./server/context');
 const Mail = require('./server/models/mail');
 const Member = require('./server/models/member');
@@ -110,8 +111,11 @@ class App extends Context {
         const newMail = new MailBuilder(mailObj, member, user);
         await newMail.setupMemberDirectory();
 
-        const memberIndexPath =
-          this.database.mailsDirectory + '/' + member.name + '/' + 'index.html';
+        const memberIndexPath = path.join(
+          this.database.mailsDirectory,
+          member.name,
+          this.database.defaultIndexFileName
+        );
 
         if (!(await this.database.directoryExists(memberIndexPath))) {
           await mailView.buildIndexPage(memberIndexPath);
@@ -119,6 +123,7 @@ class App extends Context {
 
         console.log(`📩 Saving ${member.name} - ${mailObj.fileName}`);
 
+        // add Home and current member to main viewer
         await mailView.createMemberLink(
           'All',
           this.database.indexFilePath,
@@ -133,24 +138,40 @@ class App extends Context {
 
         const memberDirs = await this.database.memberDirectoryPaths();
 
+        // add Home to all member's views
         await Promise.all(
           memberDirs.map(async (dir) => {
+            const dirPath = path.join(
+              this.database.mailsDirectory,
+              dir,
+              this.database.defaultIndexFileName
+            );
+
             await mailView.createMemberLink(
               'All',
               this.database.indexFilePath,
-              this.database.mailsDirectory + '/' + dir + '/' + 'index.html'
+              dirPath
             );
           })
         );
 
+        // add member links to each member view
         await Promise.all(
           memberDirs.map(async (dir) => {
             for (let dir2 of memberDirs) {
-              await mailView.createMemberLink(
-                dir2,
-                this.database.mailsDirectory + '/' + dir2 + '/' + 'index.html',
-                this.database.mailsDirectory + '/' + dir + '/' + 'index.html'
+              const dirPath = path.join(
+                this.database.mailsDirectory,
+                dir,
+                this.database.defaultIndexFileName
               );
+
+              const dirPath2 = path.join(
+                this.database.mailsDirectory,
+                dir2,
+                this.database.defaultIndexFileName
+              );
+
+              await mailView.createMemberLink(dir2, dirPath2, dirPath);
             }
           })
         );
@@ -190,11 +211,13 @@ class App extends Context {
         );
       }
 
-      console.log(
-        `🎉 Finished saving ${totalMails} new ${
-          totalMails > 2 ? 'mails' : 'mail'
-        }!`
-      );
+      if (totalMails) {
+        console.log(
+          `🎉 Finished saving ${totalMails} new ${
+            totalMails > 2 ? 'mails' : 'mail'
+          }!`
+        );
+      }
 
       if (failedMails) {
         console.log(

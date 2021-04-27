@@ -1,6 +1,7 @@
 const userSettings = require('./userSettings');
 
 const MEMBER_NAMES = [
+  '운영팀',
   '관은비',
   '미야와키 사쿠라',
   '강혜원',
@@ -13,6 +14,7 @@ const MEMBER_NAMES = [
   '조유리',
   '안유진',
   '장원영',
+  'Tim operasional',
   'KWON EUN BI',
   'MIYAWAKI SAKURA',
   'SAKURA MIYAWAKI',
@@ -27,6 +29,7 @@ const MEMBER_NAMES = [
   'HITOMI HONDA',
   'AHN YU JIN',
   'JANG WON YOUNG',
+  '運営チーム',
   'クォン・ウンビ',
   '宮脇 咲良',
   'カン・へウォン',
@@ -39,6 +42,7 @@ const MEMBER_NAMES = [
   'チョ・ユリ',
   'アン・ユジン',
   'チャン・ウォニョン',
+  'ทีมผู้ให้บริการ',
 ];
 
 const fileName = (mail, mimeType = 'html', key = '') => {

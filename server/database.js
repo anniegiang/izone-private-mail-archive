@@ -1,16 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const settings = require('../settings');
-
+const { MEMBER_NAMES } = require('../utils');
 class Database {
   constructor() {
-    this.mailsDirectory = path.join(__dirname, '../', settings.app.mailFolder);
     this.indexFilePath = path.join(
       __dirname,
       '../',
       settings.app.mailViewerFile
     );
+    this.mailsDirectory = path.join(__dirname, '../', settings.app.mailFolder);
     this.imagesDirectory = settings.app.imagesFolder;
+    this.defaultIndexFileName = 'index.html';
   }
 
   async setupOutputDirectory() {
@@ -47,7 +48,10 @@ class Database {
         const stat = await fs.promises.lstat(newPath);
 
         if (stat.isDirectory()) {
-          return file;
+          const parsedDir = path.parse(file);
+          if (MEMBER_NAMES.includes(parsedDir.name)) {
+            return file;
+          }
         }
       })
     );
