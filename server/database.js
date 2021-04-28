@@ -4,14 +4,13 @@ const settings = require('../settings');
 const { MEMBER_NAMES } = require('../utils');
 class Database {
   constructor() {
-    this.indexFilePath = path.join(
-      __dirname,
-      '../',
+    this.imagesDirectory = settings.app.imagesFolder;
+    this.defaultIndexFileName = settings.app.mailViewerFile;
+    this.mailsDirectory = path.resolve(settings.app.mailFolder);
+    this.indexFilePath = path.resolve(
+      this.mailsDirectory,
       settings.app.mailViewerFile
     );
-    this.mailsDirectory = path.join(__dirname, '../', settings.app.mailFolder);
-    this.imagesDirectory = settings.app.imagesFolder;
-    this.defaultIndexFileName = 'index.html';
   }
 
   async setupOutputDirectory() {
@@ -60,30 +59,34 @@ class Database {
   }
 
   async localMails(directory = this.mailsDirectory, fullPath = false) {
-    const files = await fs.promises.readdir(directory);
+    try {
+      const files = await fs.promises.readdir(directory);
 
-    const htmlFiles = await Promise.all(
-      files.map(async (file) => {
-        const newPath = path.join(directory, file);
-        const stat = await fs.promises.lstat(newPath);
+      const htmlFiles = await Promise.all(
+        files.map(async (file) => {
+          const newPath = path.join(directory, file);
+          const stat = await fs.promises.lstat(newPath);
 
-        if (stat.isDirectory()) {
-          return this.localMails(newPath, fullPath);
-        }
+          if (stat.isDirectory()) {
+            return this.localMails(newPath, fullPath);
+          }
 
-        const parsedFile = path.parse(file);
-        if (
-          stat.isFile() &&
-          parsedFile.ext === '.html' &&
-          parsedFile.name !== 'index'
-        ) {
-          return fullPath ? newPath : file;
-        }
-      })
-    );
+          const parsedFile = path.parse(file);
+          if (
+            stat.isFile() &&
+            parsedFile.ext === '.html' &&
+            parsedFile.name !== 'index'
+          ) {
+            return fullPath ? newPath : file;
+          }
+        })
+      );
 
-    const filtered = htmlFiles.flat().filter((file) => file !== undefined);
-    return fullPath ? filtered : filtered.map((file) => file.slice(0, 6));
+      const filtered = htmlFiles.flat().filter((file) => file !== undefined);
+      return fullPath ? filtered : filtered.map((file) => file.slice(0, 6));
+    } catch (error) {
+      return null;
+    }
   }
 }
 

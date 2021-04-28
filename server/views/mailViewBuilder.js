@@ -100,8 +100,8 @@ class MailViewBuilder extends Context {
     viewPortMeta2.setAttribute('http-equiv', 'X-UA-Compatible');
     viewPortMeta2.setAttribute('content', 'IE=edge');
 
-    script.src = path.join(__dirname, '../../client/index.js');
-    link.href = path.join(__dirname, '../../client/mail-viewer.css');
+    script.src = path.resolve('client/index.js');
+    link.href = path.resolve('client/mail-viewer.css');
     link.rel = 'stylesheet';
     mails.id = 'mails';
     memberLinks.id = 'member-links';
