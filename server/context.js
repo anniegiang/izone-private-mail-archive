@@ -6,7 +6,10 @@ class Context {
   constructor() {
     this.settings = settings;
     this.database = new Database();
-    this.pmController = new PrivateMailController();
+    this.pmController = new PrivateMailController({
+      baseURL: settings.app.apiHost,
+      headers: settings.pm,
+    });
   }
 }
 

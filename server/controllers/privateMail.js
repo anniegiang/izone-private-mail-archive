@@ -1,36 +1,31 @@
 const BaseAPI = require('../baseAPI.js');
 const settings = require('../../settings');
 
-class PrivateMailController {
-  constructor() {
-    this.apiHost = settings.app.apiHost;
+class PrivateMailController extends BaseAPI {
+  constructor(apiConfig) {
+    super(apiConfig);
     this.appHost = settings.app.appHost;
-    this.headers = settings.pm;
     this.endpoints = settings.endpoints;
-    this.api = new BaseAPI({
-      baseURL: this.apiHost,
-      headers: this.headers,
-    });
   }
 
   async getInbox(page = 1) {
-    return this.api.get(this.endpoints.inbox, {
+    return this.get(this.endpoints.inbox, {
       params: { page, is_star: 0, is_unread: 0 },
     });
   }
 
   async getMailDetail(mailId) {
-    return this.api.get(`${this.endpoints.mail}/${mailId}`, {
+    return this.get(`${this.endpoints.mail}/${mailId}`, {
       baseURL: this.appHost,
     });
   }
 
   async getProfile() {
-    return this.api.get(this.endpoints.users);
+    return this.get(this.endpoints.users);
   }
 
   async downloadImage(imageUrl) {
-    const response = await this.api.get(imageUrl, {
+    const response = await this.get(imageUrl, {
       responseType: 'arraybuffer',
     });
 
