@@ -17,6 +17,14 @@ class Database {
     await this.makeDirectory(this.mailsDirectory);
   }
 
+  async setupMemberDirectory(memberName) {
+    const memberDir = path.join(this.mailsDirectory, memberName);
+    const imagesDir = path.join(memberDir, this.imagesDirectory);
+    await this.makeDirectory(memberDir);
+    await this.makeDirectory(imagesDir);
+    return memberDir;
+  }
+
   async writeFile(path, data, dataType) {
     await fs.promises.writeFile(path, data, dataType);
   }
