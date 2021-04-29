@@ -1,5 +1,21 @@
 const userSettings = require('./userSettings');
 
+const NAMES_JAP_TO_KOR = {
+  運営チーム: '운영팀',
+  'クォン・ウンビ': '권은비',
+  宮脇咲良: '미야와키 사쿠라',
+  'カン・へウォ': '강혜원',
+  'チェ・イェナ': '최예나',
+  'イ・チェヨン': '이채연',
+  'キム・チェウォン': '김채원',
+  'キム・ミンジュ': '김민주',
+  矢吹奈子: '야부키 나코',
+  本田仁美: '혼다 히토미',
+  'チョ・ユリ': '조유리',
+  'アン・ユジン': '안유진',
+  'チャン・ウォニョン': '장원영',
+};
+
 const MEMBER_NAMES = [
   '운영팀',
   '권은비',
@@ -31,7 +47,7 @@ const MEMBER_NAMES = [
   'JANG WON YOUNG',
   '運営チーム',
   'クォン・ウンビ',
-  '宮脇 咲良',
+  '宮脇咲良',
   'カン・へウォン',
   'チェ・イェナ',
   'イ・チェヨン',
@@ -79,4 +95,9 @@ const encodeFullFilePath = (path) => {
   return rootPath + encoded;
 };
 
-module.exports = { fileName, encodeFullFilePath, MEMBER_NAMES };
+module.exports = {
+  fileName,
+  encodeFullFilePath,
+  MEMBER_NAMES,
+  NAMES_JAP_TO_KOR,
+};
