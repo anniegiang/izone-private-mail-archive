@@ -4,6 +4,7 @@ const { JSDOM } = jsdom;
 
 const Context = require('../context');
 const { fileName, encodeFullFilePath } = require('../../utils');
+const settings = require('../../settings');
 
 class MailBuilder extends Context {
   constructor(mail, member, user) {
@@ -11,6 +12,11 @@ class MailBuilder extends Context {
     this.mail = mail;
     this.member = member;
     this.user = user;
+    this.memberDirectory = this.member.localPath;
+    this.memberImagesDirectory = path.join(
+      this.memberDirectory,
+      settings.app.imagesFolder
+    );
   }
 
   async setupMemberDirectory() {
@@ -30,7 +36,7 @@ class MailBuilder extends Context {
     this.memberImagesDirectory = memberImagesDirectory;
   }
 
-  async saveMail(cb) {
+  async saveMail() {
     const dom = new JSDOM(this.mail.mailDetails);
     const { document } = dom.window;
 
@@ -52,7 +58,7 @@ class MailBuilder extends Context {
 
     document.querySelector('head').appendChild(link);
 
-    await this.storeMail(this.mailPath, dom.serialize(), 'utf-8', cb);
+    await this.storeMail(this.mailPath, dom.serialize(), 'utf-8');
   }
 
   async convertAndSaveImages(imgs) {
@@ -83,10 +89,9 @@ class MailBuilder extends Context {
     );
   }
 
-  async storeMail(path, data, dataType, cb) {
+  async storeMail(path, data, dataType) {
     try {
-      await this.database.writeFile(path, data, dataType);
-      return cb();
+      return this.database.writeFile(path, data, dataType);
     } catch (error) {
       const res = await this.database.writeFile(
         encodeFullFilePath(path),
@@ -94,10 +99,10 @@ class MailBuilder extends Context {
         dataType
       );
       if (!res) {
-        return cb(error, true);
+        return;
       } else {
         console.error(`❗️  Error saving mail ${path} `, error);
-        return cb(error);
+        return error;
       }
     }
   }
