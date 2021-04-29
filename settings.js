@@ -14,6 +14,7 @@ const endpoints = {
   inbox: '/inbox',
   mail: '/mail',
   users: '/users',
+  menu: '/menu',
 };
 
 const pm = {

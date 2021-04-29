@@ -10,7 +10,7 @@ class PrivateMailController extends BaseAPI {
 
   async getInbox(page = 1) {
     return this.get(this.endpoints.inbox, {
-      params: { page, is_star: 0, is_unread: 0 },
+      params: { page, is_star: 0, is_unread: 0, is_information: 0 },
     });
   }
 
@@ -22,6 +22,10 @@ class PrivateMailController extends BaseAPI {
 
   async getProfile() {
     return this.get(this.endpoints.users);
+  }
+
+  async getMenu() {
+    return this.get(this.endpoints.menu);
   }
 
   async downloadImage(imageUrl) {
