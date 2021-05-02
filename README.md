@@ -6,8 +6,9 @@
 
 ## Table of Contents
 
-***Latest release: [April 26, 2021](#release-logs)*** <br /> 
-***README last updated: May 2, 2021***
+***Latest release: [April 26, 2021 (PST)](#release-logs)*** <br /> 
+***README last updated: May 2, 2021 (PST)*** <br /> 
+***End of service: May 31, 2021 23:59 (JST)***
 
 * [Intro](#intro)
 * [Pre-reqs](#pre-reqs)
@@ -15,11 +16,9 @@
 * [Folder structure](#folder-structure)
 * [Release logs ](#release-logs)
 * [Troubleshooting](#troubleshooting)
+* [Progress](#progress)
 
 ## Intro
-
-PM officially announced service will be terminated on May 31, 2021, 23:59 (JST), and the members will stop sending mail on April 28, 2021, 23:59 (JST). This script will likely stop working when service is terminated.
-
 This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which is accessable indefinitely. All images are downloaded from PM's server, and saved as an image file. Additionally, a simple HTML file is generated to view mails either by member or all at once. The script will always ensure your inbox is updated and complete at each run-time, which is useful if fetches fail. 
 
 ## Pre-reqs
@@ -41,7 +40,7 @@ This script fetches every single mail you have ever received from the members yo
 
 All mails are saved as a static `html` file in the output folder specified in `userSettings.js`. 
 
-1. View all your mails at once by opening `out/index.html` in the browser.
+1. View mails all at once or by member by opening `out/index.html` in the browser.
 2. View mails by member `out/memberKoreanName/index.html`.
 3. View mails individually `out/memberKoreanName/`.
 
@@ -49,31 +48,34 @@ All mails are saved as a static `html` file in the output folder specified in `u
 ***Don't modify anything in the output folder. Always keep the mail id at the start of mail html files, as the script uses them to save mails efficiently, and to know if your inbox is updated or not.***
 
 ## Folder structure
-`out/index.html` => All mails viewable in the browser
+`out/index.html` => mail viewer to see mails all at once or by member
 <br />
-`out/memberKoreanName/index.html` => All mail of one member viewable in the browser
+`out/memberKoreanName/index.html` => individual mail viewers by member
 <br />
-`out/memberKoreanName/` => individual `html` mail files
+`out/memberKoreanName/` => individual mails by member
 <br />
-`out/memberKoreanName/images` => individual images live here
+`out/memberKoreanName/images` => individual images by member
 
 ## Release logs 
 
-Pull the `master` branch for the latest changes.
+Pull the `master` branch for the latest changes.<br />
 `git pull origin master`
 
-### 4/26/2021
+#### 4/26/2021
 - Navbar of links to see all mails or mails by member. Please delete your output folder and run `npm run start`.
-### 4/14/2021
+#### 4/14/2021
 - Mail filenames are customizable in `userSettings.js` (date and subject).  
 
-### 4/11/2021
+#### 4/11/2021
 - Each fetch will not terminate early to ensure your inbox is not only updated, but is also completely full.
 
-### 4/10/2021
+#### 4/10/2021
 - All mails are viewable in `out/index.html`. Please delete your output folder and run `npm run start`.
 
 ## Troubleshooting
 
 `Error saving mail, [Error: EILSEQ: illegal byte sequence]`
 - This happens if the the mail's filename has emojis. Configure your machine to accept special encoded characters and convert them to be UTF-8. Or, go to `userSettings.js` and set `mailFileName.subject` as `false` to remove the mail subject from the filename.
+
+## Progress
+- Working on improving speed and performance
