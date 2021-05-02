@@ -7,7 +7,7 @@
 ## Table of Contents
 
 ***Latest release: [April 26, 2021](#release-logs)*** <br /> 
-***README last updated: April 27, 2021***
+***README last updated: May 2, 2021***
 
 * [Intro](#intro)
 * [Pre-reqs](#pre-reqs)
@@ -20,7 +20,7 @@
 
 PM officially announced service will be terminated on May 31, 2021, 23:59 (JST), and the members will stop sending mail on April 28, 2021, 23:59 (JST). This script will likely stop working when service is terminated.
 
-This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which can be viewable indefinitely. All images are downloaded from PM's server, and saved as an image file.
+This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which is accessable indefinitely. All images are downloaded from PM's server, and saved as an image file. Additionally, a simple HTML file is generated to view mails either by member or all at once. The script will always ensure your inbox is updated and complete at each run-time, which is useful if fetches fail. 
 
 ## Pre-reqs
 - npm
