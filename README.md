@@ -19,14 +19,14 @@
 * [Progress](#progress)
 
 ## Intro
-This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which is accessable indefinitely. All images are downloaded from PM's server, and saved as an image file. Additionally, a simple HTML file is generated to view mails either by member or all at once. The script will always ensure your inbox is updated and complete at each run-time, which is useful if fetches fail. 
+This script fetches every single mail you have ever received from the members you are subscribed to, and saves each mail as a static HTML file, which is accessible indefinitely. All images are downloaded from PM's server, and saved as an image file. Additionally, a simple HTML file is generated to view mails either by member or all at once. The script will always ensure your inbox is updated and complete at each run-time, which is useful if fetches fail. 
 
 ## Pre-reqs
 - npm
 - Node.js
 - Private Mail user ID (in the app's settings)
 - Private Mail acess token
-  - Located in the HTTP request header. The header can be captured using a proxy.
+  - Located in the HTTP request header. The header can be captured using a proxy. I created a [guide](https://docs.google.com/document/d/1h-3z2mh5NgfV7OtBMe1RLsTkpxSL321Lw0GnVLbcMdI/edit?usp=sharing) for Android and MacOS users on how to do this.
 
 ## Steps
 0. Make sure you have all the [Pre-reqs](#pre-reqs)
