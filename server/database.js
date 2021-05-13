@@ -6,8 +6,8 @@ class Database {
   constructor() {
     this.imagesDirectory = settings.app.imagesFolder;
     this.defaultIndexFileName = settings.app.mailViewerFile;
-    this.mailsDirectory = path.resolve(settings.app.mailFolder);
-    this.indexFilePath = path.resolve(
+    this.mailsDirectory = path.join(__dirname, '../', settings.app.mailFolder);
+    this.indexFilePath = path.join(
       this.mailsDirectory,
       settings.app.mailViewerFile
     );

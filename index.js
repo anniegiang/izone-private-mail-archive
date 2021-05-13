@@ -13,15 +13,13 @@ class App extends Context {
     this.inbox = new Inbox();
   }
 
-  async test() {}
-
   async getUser() {
     const { error, data } = await this.pmController.getProfile();
     if (error || !data.user) {
       console.error('❗️ Your account was not found, cannot fetch mail.');
       return;
     }
-    return data.user;
+    return new User(data.user);
   }
 
   async getSubscribedMembers() {
@@ -38,9 +36,8 @@ class App extends Context {
     const { base64String } = await this.pmController.downloadImage(
       memberObj.imageUrl
     );
-    memberObj.setImageUrl = base64String;
-    this.inbox.addMember(memberObj);
-    return Promise.resolve(memberObj);
+    memberObj.setImageUrl = base64String || '';
+    return memberObj;
   }
 
   async processRawMail(mail) {
@@ -53,7 +50,7 @@ class App extends Context {
   async getPaginatedMails() {
     let done = false;
     let page = 1;
-    let mails = [];
+    let rawMails = [];
 
     while (!done) {
       const { error, data } = await this.pmController.getInbox(page);
@@ -64,7 +61,7 @@ class App extends Context {
         break;
       }
 
-      mails = [...mails, ...data.mails];
+      rawMails = [...rawMails, ...data.mails];
 
       // if (!data.has_next_page) {
       //   console.log('HI');
@@ -74,240 +71,7 @@ class App extends Context {
       // page++;
     }
 
-    return { rawMails: mails };
-  }
-
-  async init() {
-    this.preChecks();
-
-    // try {
-    const user = await this.getUser();
-    if (!user) return;
-
-    this.inbox.userProfile = new User(user);
-
-    console.log(`Welcome ${this.inbox.user.name}!`);
-
-    const subscribedMembers = await this.getSubscribedMembers();
-    if (!subscribedMembers) return;
-
-    await Promise.all(
-      subscribedMembers.map(async (data) => this.processRawMember(data.member))
-    );
-
-    const mailView = new MailViewBuilder();
-
-    console.log(`Output directory: ${this.database.mailsDirectory}`);
-
-    await this.database.setupOutputDirectory();
-    await mailView.buildIndexPage(this.database.indexFilePath);
-
-    await Promise.all(
-      Object.values(this.inbox.members).map(async (member) => {
-        const memberPath = await this.database.setupMemberDirectory(
-          member.name
-        );
-
-        member.localDirectoryPath = memberPath;
-        const memberIndexPath = path.join(
-          memberPath,
-          this.database.defaultIndexFileName
-        );
-
-        await mailView.buildIndexPage(memberIndexPath);
-      })
-    );
-
-    this.localMails = await this.database.localMails();
-
-    console.log('💌 Fetching your mails...\n');
-    const { rawMails } = await this.getPaginatedMails();
-
-    const newMails = rawMails.filter(
-      (mail) => !this.localMails.includes(mail.id)
-    );
-
-    await Promise.all(
-      newMails.reverse().map(async (mail) => this.processRawMail(mail))
-    ).then((mailObjs) => {
-      mailObjs.forEach((mailObj) => {
-        const member = this.inbox.members[mailObj.memberId];
-        member.addMail(mailObj);
-        this.inbox.addMail(mailObj);
-      });
-    });
-
-    let totalMails = 0;
-    let failedMails = 0;
-
-    await Promise.all(
-      this.inbox.mails.map(async (mail) => {
-        const member = this.inbox.members[mail.memberId];
-        const mailBuilder = new MailBuilder(mail, member, this.inbox.user);
-        const log = `${member.name} - ${mail.fileName}`;
-
-        return mailBuilder
-          .saveMail()
-          .then(async () => {
-            totalMails++;
-            console.log(`✅ Saved! ${log}\n`);
-            const mailPath = mailBuilder.mailPath;
-
-            await mailView.createMailView(
-              mailPath,
-              mail,
-              member,
-              this.database.indexFilePath
-            );
-
-            await mailView.createMailView(
-              mailPath,
-              mail,
-              member,
-              path.join(member.localPath, this.database.defaultIndexFileName)
-            );
-
-            return Promise.resolve(log);
-          })
-          .catch((error) => {
-            failedMails++;
-            console.log(`❌ Fail! ${log}\n`, error);
-            return Promise.resolve(error);
-          });
-      })
-    );
-
-    // async (error, encoded) => {
-    //       if (!error || encoded) {
-    //         console.log('✅ Saved!\n');
-    //         const mailPath = !encoded
-    //           ? mailBuilder.mailPath
-    //           : encodeFullFilePath(mailBuilder.mailPath);
-
-    //         await mailView.createMailView(
-    //           mailPath,
-    //           mail,
-    //           member,
-    //           this.database.indexFilePath
-    //         );
-
-    //         await mailView.createMailView(
-    //           mailPath,
-    //           mail,
-    //           member,
-    //           path.join(member.localPath, this.database.defaultIndexFileName)
-    //         );
-
-    //         totalMails++;
-    //       } else {
-    //         console.log('❌ Fail!\n');
-    //         failedMails++;
-    //       }
-    //     });
-
-    //   for (const mail of reversedMails) {
-    //     console.log(`📩 Saving ${member.name} - ${mailObj.fileName}`);
-
-    //     // add Home and current member to main viewer
-    //     await mailView.createMemberLink(
-    //       'All',
-    //       this.database.indexFilePath,
-    //       this.database.indexFilePath
-    //     );
-
-    //     await mailView.createMemberLink(
-    //       member.name,
-    //       memberIndexPath,
-    //       this.database.indexFilePath
-    //     );
-
-    //     const memberDirs = await this.database.memberDirectoryPaths();
-
-    //     // add Home to all member's views
-    //     await Promise.all(
-    //       memberDirs.map(async (dir) => {
-    //         const dirPath = path.join(
-    //           this.database.mailsDirectory,
-    //           dir,
-    //           this.database.defaultIndexFileName
-    //         );
-
-    //         await mailView.createMemberLink(
-    //           'All',
-    //           this.database.indexFilePath,
-    //           dirPath
-    //         );
-    //       })
-    //     );
-
-    //     // add member links to each member view
-    //     await Promise.all(
-    //       memberDirs.map(async (dir) => {
-    //         for (let dir2 of memberDirs) {
-    //           const dirPath = path.join(
-    //             this.database.mailsDirectory,
-    //             dir,
-    //             this.database.defaultIndexFileName
-    //           );
-
-    //           const dirPath2 = path.join(
-    //             this.database.mailsDirectory,
-    //             dir2,
-    //             this.database.defaultIndexFileName
-    //           );
-
-    //           await mailView.createMemberLink(dir2, dirPath2, dirPath);
-    //         }
-    //       })
-    //     );
-
-    //     await newMail.saveMail(async (error, encoded) => {
-    //       if (!error || encoded) {
-    //         console.log('✅ Saved!\n');
-    //         const mailPath = !encoded
-    //           ? newMail.mailPath
-    //           : encodeFullFilePath(newMail.mailPath);
-
-    //         await mailView.createMailView(
-    //           mailPath,
-    //           mailObj,
-    //           member,
-    //           this.database.indexFilePath
-    //         );
-
-    //         await mailView.createMailView(
-    //           mailPath,
-    //           mailObj,
-    //           member,
-    //           memberIndexPath
-    //         );
-
-    //         totalMails++;
-    //       } else {
-    //         console.log('❌ Fail!\n');
-    //         failedMails++;
-    //       }
-    //     });
-    //   }
-
-    if (totalMails) {
-      console.log(
-        `🎉 Finished saving ${totalMails} new ${
-          totalMails > 2 ? 'mails' : 'mail'
-        }!`
-      );
-    }
-
-    if (failedMails) {
-      console.log(
-        `❗️ Failed to save ${failedMails} ${
-          failedMails > 2 ? 'mails' : 'mail'
-        }!`
-      );
-    }
-    // } catch (error) {
-    //   console.error('❗️ ', error);
-    // }
+    return rawMails;
   }
 
   preChecks() {
@@ -339,6 +103,159 @@ class App extends Context {
       this.settings.pm['user-id'] &&
       this.settings.pm['access-token'] &&
       this.settings.app.mailFolder
+    );
+  }
+
+  async init() {
+    this.preChecks();
+
+    // Get current user's profile
+    const currentUser = await this.getUser();
+    if (!currentUser) return;
+    this.inbox.userProfile = currentUser;
+
+    console.log(`💌 Welcome ${this.inbox.user.name}!`);
+    console.log(`➡️  Output folder: ${this.database.mailsDirectory}`);
+
+    const BuildIndexView = new MailViewBuilder();
+
+    // Setup output directory
+    await this.database.setupOutputDirectory();
+    await BuildIndexView.buildIndexPage();
+    await BuildIndexView.createMemberLink(
+      'Home',
+      this.database.indexFilePath,
+      this.database.indexFilePath
+    );
+
+    // Fetch subscribed members
+    const subscribedMembers = await this.getSubscribedMembers();
+    if (!subscribedMembers) return;
+
+    // Process raw members and setup each member's directory
+    await Promise.all(
+      subscribedMembers.map(async (member) => {
+        const memberObj = await this.processRawMember(member.member);
+        this.inbox.addMember(memberObj);
+
+        // Setup member's directory
+        memberObj.localDirectoryPath = await this.database.setupMemberDirectory(
+          memberObj.name
+        );
+        await BuildIndexView.buildIndexPage(
+          path.join(memberObj.localPath, this.database.defaultIndexFileName)
+        );
+      })
+    );
+
+    // Fetch, process, and build mail static files
+    const localMailIds = await this.database.localMails();
+    const rawMails = await this.getPaginatedMails();
+    const mails = rawMails
+      .filter((mail) => !localMailIds.includes(mail.id))
+      .reverse();
+
+    console.log(`📩 Saving ${mails.length} new mails...\n`);
+
+    let totalMails = 0;
+    let failedMails = 0;
+
+    await Promise.all(
+      mails.map(async (mail) => {
+        const mailObj = await this.processRawMail(mail);
+        const memberObj = this.inbox.members[mailObj.memberId];
+        const BuildMail = new MailBuilder(mailObj, memberObj, this.inbox.user);
+        const log = `${memberObj.name} - ${mailObj.fileName}`;
+
+        BuildMail.saveMail()
+          .then(async () => {
+            totalMails++;
+            console.log(`✅  Saved ${log}\n`);
+          })
+          .catch((error) => {
+            failedMails++;
+            console.log(`❌  Failed to save: ${log}\n${error}\n`);
+          });
+      })
+    );
+
+    // Build index views
+    for (const mail of mails) {
+      const mailObj = new Mail(mail);
+      const memberObj = this.inbox.members[mailObj.memberId];
+      const mailPath = path.join(memberObj.localPath, mailObj.fileName);
+      const memberIndexPath = path.join(
+        memberObj.localPath,
+        this.database.defaultIndexFileName
+      );
+      // Build index pages
+      await BuildIndexView.createMailView(
+        mailPath,
+        mailObj,
+        memberObj,
+        this.database.indexFilePath
+      );
+
+      await BuildIndexView.createMailView(
+        mailPath,
+        mailObj,
+        memberObj,
+        memberIndexPath
+      );
+    }
+
+    // Add nav links to index pages
+    const members = Object.values(this.inbox.members);
+    for (const memberObj of members) {
+      const memberIndexPath = path.join(
+        memberObj.localPath,
+        this.database.defaultIndexFileName
+      );
+
+      // Add current member to Index page
+      await BuildIndexView.createMemberLink(
+        memberObj.name,
+        memberIndexPath,
+        this.database.indexFilePath
+      );
+
+      // Add other member's links
+      for (const memberObj2 of members) {
+        const memberIndexPath2 = path.join(
+          memberObj2.localPath,
+          this.database.defaultIndexFileName
+        );
+
+        // Add Home to Member index page
+        await BuildIndexView.createMemberLink(
+          'Home',
+          this.database.indexFilePath,
+          memberIndexPath2
+        );
+
+        await BuildIndexView.createMemberLink(
+          memberObj.name,
+          memberIndexPath,
+          memberIndexPath2
+        );
+      }
+    }
+
+    console.log(
+      `🎉  Finished saving ${totalMails} new ${
+        totalMails > 1 ? 'mails' : 'mail'
+      }!`
+    );
+    if (failedMails) {
+      console.log(
+        `❌  Failed to save ${failedMails} new ${
+          failedMails > 1 ? 'mails' : 'mail'
+        }.`
+      );
+    }
+
+    console.log(
+      `View all mails in the browser using the file: ${this.database.indexFilePath}\n`
     );
   }
 }

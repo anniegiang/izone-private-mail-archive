@@ -1,11 +1,6 @@
 class Inbox {
   constructor() {
     this.members = {};
-    this.mails = [];
-  }
-
-  addMail(mail) {
-    this.mails.push(mail);
   }
 
   addMember(member) {

@@ -4,7 +4,6 @@ class Member {
     this.id = member.id;
     this.name = NAMES_JAP_TO_KOR[member.name];
     this.imageUrl = member.image_url;
-    this.mails = [];
   }
 
   addMail(mail) {
