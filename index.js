@@ -63,12 +63,11 @@ class App extends Context {
 
       rawMails = [...rawMails, ...data.mails];
 
-      // if (!data.has_next_page) {
-      //   console.log('HI');
-      done = true;
-      break;
-      // }
-      // page++;
+      if (!data.has_next_page) {
+        done = true;
+        break;
+      }
+      page++;
     }
 
     return rawMails;
@@ -120,6 +119,7 @@ class App extends Context {
     const BuildIndexView = new MailViewBuilder();
 
     // Setup output directory
+    console.log('➡️  Setting up output folders and files...');
     await this.database.setupOutputDirectory();
     await BuildIndexView.buildIndexPage();
     await BuildIndexView.createMemberLink(
@@ -142,32 +142,74 @@ class App extends Context {
         memberObj.localDirectoryPath = await this.database.setupMemberDirectory(
           memberObj.name
         );
-        await BuildIndexView.buildIndexPage(
-          path.join(memberObj.localPath, this.database.defaultIndexFileName)
+
+        const memberIndexPath = path.join(
+          memberObj.localPath,
+          this.database.defaultIndexFileName
+        );
+
+        await BuildIndexView.createMemberLink(
+          memberObj.name,
+          memberIndexPath,
+          this.database.indexFilePath
+        );
+
+        await BuildIndexView.buildIndexPage(memberIndexPath);
+        await BuildIndexView.createMemberLink(
+          'Home',
+          this.database.indexFilePath,
+          memberIndexPath
         );
       })
     );
 
+    // Add nav links to index pages
+    const members = Object.values(this.inbox.members);
+    for (const memberObj of members) {
+      const memberIndexPath = path.join(
+        memberObj.localPath,
+        this.database.defaultIndexFileName
+      );
+
+      // Add other member's links
+      for (const memberObj2 of members) {
+        const memberIndexPath2 = path.join(
+          memberObj2.localPath,
+          this.database.defaultIndexFileName
+        );
+
+        await BuildIndexView.createMemberLink(
+          memberObj.name,
+          memberIndexPath,
+          memberIndexPath2
+        );
+      }
+    }
+
     // Fetch, process, and build mail static files
+    console.log('➡️  Fetching mails from server...');
     const localMailIds = await this.database.localMails();
     const rawMails = await this.getPaginatedMails();
     const mails = rawMails
-      .filter((mail) => !localMailIds.includes(mail.id))
+      .filter((mail) => !localMailIds.includes(mail.id) && mail.member.id !== 0)
       .reverse();
 
-    console.log(`📩 Saving ${mails.length} new mails...\n`);
+    console.log(`➡️  Saving ${mails.length} new mails...\n`);
 
     let totalMails = 0;
     let failedMails = 0;
 
+    this.inbox.mails = await Promise.all(
+      mails.map(async (mail) => this.processRawMail(mail))
+    );
+
     await Promise.all(
-      mails.map(async (mail) => {
-        const mailObj = await this.processRawMail(mail);
+      this.inbox.mails.map(async (mailObj) => {
         const memberObj = this.inbox.members[mailObj.memberId];
         const BuildMail = new MailBuilder(mailObj, memberObj, this.inbox.user);
         const log = `${memberObj.name} - ${mailObj.fileName}`;
 
-        BuildMail.saveMail()
+        return BuildMail.saveMail()
           .then(async () => {
             totalMails++;
             console.log(`✅  Saved ${log}\n`);
@@ -179,9 +221,10 @@ class App extends Context {
       })
     );
 
-    // Build index views
-    for (const mail of mails) {
-      const mailObj = new Mail(mail);
+    // Build index views - non-parallel
+    console.log('➡️  Building mail viewers...\n');
+    for (const mailObj of this.inbox.mails) {
+      console.log(`➡️  Add ${mailObj.id} to mail viewers`);
       const memberObj = this.inbox.members[mailObj.memberId];
       const mailPath = path.join(memberObj.localPath, mailObj.fileName);
       const memberIndexPath = path.join(
@@ -194,51 +237,26 @@ class App extends Context {
         mailObj,
         memberObj,
         this.database.indexFilePath
-      );
+      )
+        .then(() => {
+          console.log('✅  Home mail view');
+        })
+        .catch(() => {
+          console.log('❌  Home mail view');
+        });
 
       await BuildIndexView.createMailView(
         mailPath,
         mailObj,
         memberObj,
         memberIndexPath
-      );
-    }
-
-    // Add nav links to index pages
-    const members = Object.values(this.inbox.members);
-    for (const memberObj of members) {
-      const memberIndexPath = path.join(
-        memberObj.localPath,
-        this.database.defaultIndexFileName
-      );
-
-      // Add current member to Index page
-      await BuildIndexView.createMemberLink(
-        memberObj.name,
-        memberIndexPath,
-        this.database.indexFilePath
-      );
-
-      // Add other member's links
-      for (const memberObj2 of members) {
-        const memberIndexPath2 = path.join(
-          memberObj2.localPath,
-          this.database.defaultIndexFileName
-        );
-
-        // Add Home to Member index page
-        await BuildIndexView.createMemberLink(
-          'Home',
-          this.database.indexFilePath,
-          memberIndexPath2
-        );
-
-        await BuildIndexView.createMemberLink(
-          memberObj.name,
-          memberIndexPath,
-          memberIndexPath2
-        );
-      }
+      )
+        .then(() => {
+          console.log(`✅  ${memberObj.name} mail view\n`);
+        })
+        .catch(() => {
+          console.log(`❌  ${memberObj.name} mail view\n`);
+        });
     }
 
     console.log(
@@ -255,7 +273,7 @@ class App extends Context {
     }
 
     console.log(
-      `View all mails in the browser using the file: ${this.database.indexFilePath}\n`
+      `\nView all mails in the browser:\n${this.database.indexFilePath}\n`
     );
   }
 }
